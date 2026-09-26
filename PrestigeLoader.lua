@@ -34,6 +34,13 @@ local Games = {
 			{ "Aim Part", "Head or Torso" }, { "Prediction", "Leads moving targets" },
 			{ "ESP", "Boxes, names, distance and health" },
 			{ "Team Check", "Hides teammates (Roblox Teams)" } } },
+	{ Name = "Pordier at War", PlaceId = 8791578652, Script = "Pordier.lua",
+		Description = "WW1 fantasy FPS. Payload-rewrite silent aim and player ESP.",
+		Features = { { "Silent Aim", "Rewrites bullet entries onto the target" },
+			{ "Aim Part", "Head or Torso (R6)" }, { "Prediction", "Leads moving targets" },
+			{ "Redirect Tracer", "Cold War-style muzzle-to-target beam" },
+			{ "ESP", "Boxes, names, distance and health" },
+			{ "Team Check", "Hides teammates (Roblox Teams)" } } },
 }
 
 local env = (getgenv and getgenv()) or _G

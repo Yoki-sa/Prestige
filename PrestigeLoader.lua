@@ -7,44 +7,33 @@
 
 	Host PrestigeLib.lua, this file and your game scripts somewhere raw (GitHub raw, etc.) and fill in the URLs.
 	Run with:  loadstring(game:HttpGet(LOADER_URL))()
+
+	Shrimp build: the Games table only lists the two ported Shrimp games.
+	Game scripts live as plain files in the Potassium workspace (readfile),
+	with an HttpGet fallback for when they're hosted raw.
 ]]
 
 local BASE = "https://raw.githubusercontent.com/Yoki-sa/Prestige/refs/heads/main/"
 local LIB_URL = BASE .. "PrestigeLib.lua"
 
--- Script may be a URL (fetched + loadstring'd) or a function(Library, entry)
+-- Script may be a URL (fetched + loadstring'd), a workspace path (readfile),
+-- or a function(Library, entry)
 -- Features: strings or { "Name", "Short description" }
 local Games = {
-	{ Name = "Universal", Universal = true, Icon = "games", Script = BASE .. "Example.lua",
-		Description = "General tools that work in any experience: movement, visuals and quality-of-life.",
-		Features = { { "Speed", "Raises your walk speed" }, { "Flight", "Free flight with noclip" }, { "ESP", "Players through walls" },
-			{ "Fullbright", "Removes darkness and fog" }, { "Anti AFK", "Stops the idle kick" }, { "Server Hop", "Joins a different server" } } },
-	{ Name = "Universal Aim", Universal = true, Icon = "combat", Script = BASE .. "Example.lua",
-		Description = "Camera aim assist and silent aim that adapt to most shooters.",
-		Features = { { "Aim Assist", "Smoothly tracks the closest target" }, { "FOV Circle", "Configurable field of view" },
-			{ "Team Check", "Ignores teammates" }, { "Visible Check", "Only locks on to visible players" } } },
-	{ Name = "Arsenal", PlaceId = 286090429, Script = BASE .. "Example.lua",
-		Description = "Fast-paced FPS. Aim assist, ESP and movement modules.",
-		Features = { { "Aim Assist", "Target smoothing and FOV" }, { "Trigger Bot", "Fires when on target" }, { "ESP", "Boxes, names and health" },
-			{ "Hitboxes", "Expands enemy hitboxes" }, { "Speed", "Movement boost" }, { "Gun Mods", "No recoil and spread" } } },
-	{ Name = "Blox Fruits", PlaceId = 2753915549, PlaceIds = { 4442272183, 7449423635 }, Script = BASE .. "Example.lua",
-		Description = "Farming, fruit notifier and teleports across all three seas.",
-		Features = { { "Auto Farm", "Levels quests automatically" }, { "Fruit Notifier", "Alerts when a fruit spawns" }, { "Island Teleports", "Every island in all seas" }, { "Auto Stats", "Spends points for you" } } },
-	{ Name = "Doors", PlaceId = 6516141723, Script = BASE .. "Example.lua",
-		Description = "Entity ESP, key and lever finder, auto-hide.",
-		Features = { { "Entity ESP", "Rush, Ambush, Figure and more" }, { "Key Finder", "Highlights keys and levers" }, { "Auto Hide", "Hides when entities spawn" }, { "Notifier", "Warns before entities" } } },
-	{ Name = "Murder Mystery 2", PlaceId = 142823291, Script = BASE .. "Example.lua",
-		Description = "Role reveal, gun ESP and coin collection.",
-		Features = { { "Role Reveal", "Shows the murderer and sheriff" }, { "Gun ESP", "Tracks the dropped gun" }, { "Coin Farm", "Collects coins" } } },
-	{ Name = "BedWars", PlaceId = 6872265039, Script = BASE .. "Example.lua",
-		Description = "Kill aura, scaffold and bed ESP.",
-		Features = { { "Kill Aura", "Hits nearby players" }, { "Scaffold", "Places blocks under you" }, { "Bed ESP", "Highlights beds" }, { "Velocity", "Reduces knockback" } } },
-	{ Name = "Da Hood", PlaceId = 2788229376, Script = BASE .. "Example.lua",
-		Description = "Lock-on, ESP and auto stomp.",
-		Features = { { "Lock-On", "Camera lock with prediction" }, { "ESP", "Players and cash" }, { "Auto Stomp", "Stomps knocked players" } } },
-	{ Name = "Jailbreak", PlaceId = 606849621, Script = BASE .. "Example.lua",
-		Description = "Robbery helpers, car mods and teleports.",
-		Features = { { "Robbery Status", "Which stores are open" }, { "Car Mods", "Speed and handling" }, { "Teleports", "Every location on the map" } } },
+	{ Name = "Cold War", PlaceId = 13687899540, Script = "games/13687899540/ColdWar.lua",
+		Description = "Ballistics shooter. Pellet-cone silent aim and player ESP.",
+		Features = { { "Silent Aim", "Rotates the whole pellet cone onto the target" },
+			{ "Aim Part", "Head or Torso" }, { "Prediction", "Leads moving targets" },
+			{ "Redirect Tracer", "Muzzle-to-target beam on redirected shots" },
+			{ "ESP", "Boxes, names, distance and health" },
+			{ "Visibility Colors", "Green when seen, red when blocked" } } },
+	{ Name = "Entrenched", PlaceId = 3678761576, Script = "games/3678761576/Entrenched.lua",
+		Description = "WeaponModule shooter. Aim-point redirect with pellet claims and player ESP.",
+		Features = { { "Silent Aim", "Redirects the shot's aim point to the target" },
+			{ "Claim Pellets", "Rebuilds the hit list so damage lands" },
+			{ "Aim Part", "Head or Torso" }, { "Prediction", "Leads moving targets" },
+			{ "ESP", "Boxes, names, distance and health" },
+			{ "Team Check", "Hides teammates (Roblox Teams)" } } },
 }
 
 local env = (getgenv and getgenv()) or _G
@@ -58,13 +47,25 @@ if not Library then
 end
 Library.Games = Games
 
-local function runGame(entry)
+local function resolveScript(entry)
 	local fn = entry.Script
 	if type(fn) == "string" then
-		local chunk, err = loadstring(game:HttpGet(fn))
-		if not chunk then warn("[Prestige] failed to compile " .. entry.Name .. ": " .. tostring(err)) return end
+		local src
+		if isfile and isfile(fn) then
+			src = readfile(fn)
+		else
+			src = game:HttpGet(fn)
+		end
+		local chunk, err = loadstring(src)
+		if not chunk then warn("[Prestige] failed to compile " .. entry.Name .. ": " .. tostring(err)) return nil end
 		fn = chunk
 	end
+	return fn
+end
+
+local function runGame(entry)
+	local fn = resolveScript(entry)
+	if not fn then return end
 	task.spawn(function()
 		local ok, err = pcall(fn, Library, entry)
 		if not ok then warn("[Prestige] " .. entry.Name .. " script error: " .. tostring(err)) end

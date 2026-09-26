@@ -9,7 +9,7 @@
 	Run with:  loadstring(game:HttpGet(LOADER_URL))()
 ]]
 
-local BASE = "https://raw.githubusercontent.com/Yoki-sa/Prestige/refs/heads/main"
+local BASE = "https://raw.githubusercontent.com/Yoki-sa/Prestige/refs/heads/main/"
 local LIB_URL = BASE .. "PrestigeLib.lua"
 
 -- Script may be a URL (fetched + loadstring'd) or a function(Library, entry)

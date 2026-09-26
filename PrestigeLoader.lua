@@ -8,7 +8,7 @@
 	Run with:  loadstring(game:HttpGet(LOADER_URL))()
 ]]
 
-local LIB_URL = "https://raw.githubusercontent.com/YOUR_NAME/prestige/main/PrestigeLib.lua"
+local LIB_URL = "https://raw.githubusercontent.com/Yoki-sa/Prestige/refs/heads/main/PrestigeLib.lua"
 local LOADER_URL = "https://raw.githubusercontent.com/YOUR_NAME/prestige/main/PrestigeLoader.lua"
 
 -- Script may be a URL (fetched + loadstring'd) or a function(Library, entry)

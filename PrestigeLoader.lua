@@ -10,13 +10,13 @@
 
 	Shrimp build: the Games table only lists the two ported Shrimp games.
 	Game scripts live as plain files in the Potassium workspace (readfile),
-	with an HttpGet fallback for when they're hosted raw.
+	with an HttpGet fallback (relative names resolve against BASE).
 ]]
 
 local BASE = "https://raw.githubusercontent.com/Yoki-sa/Prestige/refs/heads/main/"
 local LIB_URL = BASE .. "PrestigeLib.lua"
 
--- Script may be a URL (fetched + loadstring'd), a workspace path (readfile),
+-- Script may be a URL, a file name (workspace readfile, else fetched from BASE),
 -- or a function(Library, entry)
 -- Features: strings or { "Name", "Short description" }
 local Games = {
@@ -54,7 +54,13 @@ local function resolveScript(entry)
 		if isfile and isfile(fn) then
 			src = readfile(fn)
 		else
-			src = game:HttpGet(fn)
+			local url = fn:match("^https?://") and fn or (BASE .. fn)
+			local ok, res = pcall(game.HttpGet, game, url)
+			if not ok then
+				warn("[Prestige] failed to fetch " .. entry.Name .. " from " .. url .. ": " .. tostring(res))
+				return nil
+			end
+			src = res
 		end
 		local chunk, err = loadstring(src)
 		if not chunk then warn("[Prestige] failed to compile " .. entry.Name .. ": " .. tostring(err)) return nil end

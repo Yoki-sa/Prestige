@@ -13,7 +13,7 @@ local LOADER_URL = "https://raw.githubusercontent.com/Yoki-sa/Prestige/refs/head
 
 -- Script may be a URL (fetched + loadstring'd) or a function(Library, entry)
 local Games = {
-	{ Name = "Arsenal", PlaceId = 286090429, Script = "https://raw.githubusercontent.com/YOUR_NAME/prestige/main/games/Example.lua",
+	{ Name = "Arsenal", PlaceId = 286090429, Script = "https://raw.githubusercontent.com/Yoki-sa/Prestige/refs/heads/main/Example.lua",
 		Description = "Fast-paced FPS. Aim assist, ESP and movement modules." },
 	{ Name = "Blox Fruits", PlaceId = 2753915549, PlaceIds = { 4442272183, 7449423635 }, Script = "https://raw.githubusercontent.com/YOUR_NAME/prestige/main/games/Example.lua",
 		Description = "Farming, fruit notifier and teleports across all three seas." },

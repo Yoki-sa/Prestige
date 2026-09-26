@@ -20,14 +20,14 @@ local LIB_URL = BASE .. "PrestigeLib.lua"
 -- or a function(Library, entry)
 -- Features: strings or { "Name", "Short description" }
 local Games = {
-	{ Name = "Cold War", PlaceId = 13687899540, Script = "games/13687899540/ColdWar.lua",
+	{ Name = "Cold War", PlaceId = 13687899540, Script = "ColdWar.lua",
 		Description = "Ballistics shooter. Pellet-cone silent aim and player ESP.",
 		Features = { { "Silent Aim", "Rotates the whole pellet cone onto the target" },
 			{ "Aim Part", "Head or Torso" }, { "Prediction", "Leads moving targets" },
 			{ "Redirect Tracer", "Muzzle-to-target beam on redirected shots" },
 			{ "ESP", "Boxes, names, distance and health" },
 			{ "Visibility Colors", "Green when seen, red when blocked" } } },
-	{ Name = "Entrenched", PlaceId = 3678761576, Script = "games/3678761576/Entrenched.lua",
+	{ Name = "Entrenched", PlaceId = 3678761576, Script = "Entrenched.lua",
 		Description = "WeaponModule shooter. Aim-point redirect with pellet claims and player ESP.",
 		Features = { { "Silent Aim", "Redirects the shot's aim point to the target" },
 			{ "Claim Pellets", "Rebuilds the hit list so damage lands" },

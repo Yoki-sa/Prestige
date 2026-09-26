@@ -9,7 +9,7 @@
 ]]
 
 local LIB_URL = "https://raw.githubusercontent.com/Yoki-sa/Prestige/refs/heads/main/PrestigeLib.lua"
-local LOADER_URL = "https://raw.githubusercontent.com/YOUR_NAME/prestige/main/PrestigeLoader.lua"
+local LOADER_URL = "https://raw.githubusercontent.com/Yoki-sa/Prestige/refs/heads/main/PrestigeLoader.lua"
 
 -- Script may be a URL (fetched + loadstring'd) or a function(Library, entry)
 local Games = {

@@ -46,14 +46,16 @@ local Combat = Window:AddCategory("Combat", "combat")
 -- ------------------------------------------------------------------ SilentAim
 -- Silent aim for the Shared.Ballistics system, built from the ClientFire
 -- decompile. The client is authoritative about shot DIRECTION:
---   ClientFire.o9HACKmCVc(weapon, muzzleIdx, bulletIdx, Origin, dirs, opts)
+--   ClientFire.wP6xVL01BP(weapon, muzzleIdx, bulletIdx, Origin, dirs, opts)
 -- encodes the pellet directions into the Net.Fire payload (ShotCodec) AND
 -- simulates the pellets locally (tracers, impact presentation, hit claims)
--- from those same directions. We hook o9HACKmCVc — fire() calls it through
+-- from those same directions. We hook wP6xVL01BP — fire() calls it through
 -- the shared module table at call time, so one hook covers both entry points
 -- — and rigidly rotate the whole pellet cone onto the best crosshair target
 -- before the original runs. Payload, local sim and hit claims then all
 -- agree with each other, which is exactly what a legit shot looks like.
+-- (o9HACKmCVc is accepted as a fallback: same 6-arg signature in older
+-- builds of the module.)
 --
 -- Tracers: the local sim would draw the bent path (not silent), so
 -- redirected shots set opts.Tracer = false and draw a short muzzle->target
@@ -255,8 +257,18 @@ local function startSilentAim()
 		return
 	end
 	local okM, mod = pcall(require, CFR)
-	if not okM or type(mod) ~= "table" or type(mod.o9HACKmCVc) ~= "function" then
+	if not okM or type(mod) ~= "table" then
 		warn("[Prestige] ClientFire module not hookable (" .. tostring(okM and "shape" or mod) .. ")")
+		return
+	end
+
+	-- the hook target gets renamed between game updates; accept any known name
+	local targetName
+	for _, name in ipairs({ "wP6xVL01BP", "o9HACKmCVc" }) do
+		if type(mod[name]) == "function" then targetName = name break end
+	end
+	if not targetName then
+		warn("[Prestige] ClientFire hook target not found (wP6xVL01BP/o9HACKmCVc)")
 		return
 	end
 
@@ -264,8 +276,8 @@ local function startSilentAim()
 	-- still prevents stacking wrappers across re-executes)
 	if not Shrimp.BallisticSAHooked then
 		Shrimp.BallisticSAHooked = true
-		local orig = mod.o9HACKmCVc
-		mod.o9HACKmCVc = function(weapon, muzzleIdx, bulletIdx, origin, dirs, opts)
+		local orig = mod[targetName]
+		mod[targetName] = function(weapon, muzzleIdx, bulletIdx, origin, dirs, opts)
 			if SAConfig.Enabled and type(dirs) == "table" and #dirs > 0
 				and typeof(origin) == "Vector3" then
 				local okT, target = pcall(pickTarget, workspace.CurrentCamera)

@@ -20,6 +20,10 @@ local LIB_URL = BASE .. "PrestigeLib.lua"
 -- or a function(Library, entry)
 -- Features: strings or { "Name", "Short description" }
 local Games = {
+	{ Name = "Universal", Universal = true, Icon = "games", Script = BASE .. "games/Example.lua",
+		Description = "General tools that work in any experience: movement, visuals and quality-of-life.",
+		Features = { { "Speed", "Raises your walk speed" }, { "Flight", "Free flight with noclip" }, { "ESP", "Players through walls" },
+			{ "Fullbright", "Removes darkness and fog" }, { "Anti AFK", "Stops the idle kick" }, { "Server Hop", "Joins a different server" } } },
 	{ Name = "Cold War", PlaceId = 13687899540, Script = "ColdWar.lua",
 		Description = "Ballistics shooter. Pellet-cone silent aim and player ESP.",
 		Features = { { "Silent Aim", "Rotates the whole pellet cone onto the target" },
